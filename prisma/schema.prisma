@@ -1,0 +1,39 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url = env("DATABASE_URL")
+    directUrl = env("DATABASE_URL_NON_POOLING")
+}
+
+model Survey {
+    id String @default(cuid()) @id
+    managerId String
+    acceptResponsesUntil DateTime DateTime @map(name: "created_at)
+    createdAt DateTime @default(now(), @map(name: "created_at))
+}
+
+model Response {
+    id String @default(cuid()) @id
+    survey Survey
+    createdAt DateTime @default(now(), @map(name: "created_at))
+}
+
+model Question {
+    id String @default(cuid()) @id
+    surveyId String
+    index Number
+    required Boolean @default(false)
+    type varchar
+    values: String[]
+    createdAt DateTime @default(now(), @map(name: "created_at))
+}
+
+model QuestionResponse {
+    id String @default(cuid())
+    response Response
+    question Question
+    values: String[]
+}

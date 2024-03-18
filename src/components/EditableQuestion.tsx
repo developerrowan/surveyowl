@@ -1,8 +1,9 @@
 'use client';
 
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
-import { Checkbox, Input, Paper, Text, Textarea, Radio, TextInput, Button } from '@mantine/core';
-import { Icon123, IconBlockquote, IconCursorText, IconListCheck, IconListDetails, IconMail, IconNumber123, IconPhone, IconPlus } from '@tabler/icons-react';
+import { Checkbox, Input, Paper, Text, Textarea, Radio, TextInput, Button, Group, ActionIcon, Tooltip } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { Icon123, IconBlockquote, IconCursorText, IconListCheck, IconListDetails, IconMail, IconNumber123, IconPhone, IconPlus, IconTrash } from '@tabler/icons-react';
 import { ReactNode, RefObject, useEffect, useId, useState } from 'react';
 
 export interface Question {
@@ -53,6 +54,7 @@ export default function EditableQuestion(props: EditableQuestionProps) {
     const questionId: string = props.data.id;
     const [responses, setResponses] = useState(props.data.responses || []);
     const [title, setTitle] = useState(props.data.title);
+    const [required, setRequired] = useState(props.data.required);
     const [question, setQuestion] = useState(props.data);
 
     const handleDragEnd = (result: any) => {
@@ -81,6 +83,10 @@ export default function EditableQuestion(props: EditableQuestionProps) {
 
     useEffect(() => {
         setQuestion(getQuestionObject());
+    }, [required]);
+
+    useEffect(() => {
+        setQuestion(getQuestionObject());
     }, [responses]);
 
     const updateTitle = (newTitle: string) => {
@@ -89,15 +95,25 @@ export default function EditableQuestion(props: EditableQuestionProps) {
         setQuestion(getQuestionObject());
     }
 
+    const deleteQuestion = () => {
+        props.updateQuestion(questionId, undefined)
+    };
+
     const updateResponse = (responseIndex: number, newResponse: string) => {
         const newData = [...responses];
         newData[responseIndex] = newResponse;
         setResponses(newData);
     }
 
+    const deleteResponse = (responseIndex: number) => {
+        const newData = [...responses];
+        newData.splice(responseIndex, 1);
+        setResponses(newData);
+    }
+
     const addItem = () => {
         const newData = [...responses];
-        newData.push('Enter your response here.');
+        newData.push('');
 
         setResponses(newData);
     };
@@ -107,7 +123,7 @@ export default function EditableQuestion(props: EditableQuestionProps) {
             title,
             type: props.data.type,
             id: questionId,
-            required: true,
+            required,
             responses
         } as Question;
     }
@@ -127,8 +143,13 @@ export default function EditableQuestion(props: EditableQuestionProps) {
                                     radius="md"
                                     withBorder
                                 >
-                                    <TextInput value={title} onChange={(e) => updateTitle(e.currentTarget.value)} leftSectionPointerEvents='none' leftSection={getIcon(props.data.type)}></TextInput>
-                                    <Checkbox defaultChecked label="Required"></Checkbox>
+                                    <Group>
+                                        <TextInput value={title} onChange={(e) => updateTitle(e.currentTarget.value)} leftSectionPointerEvents='none' leftSection={getIcon(props.data.type)}></TextInput>
+                                        <Checkbox label="Required" checked={required} onChange={(e) => setRequired(e.currentTarget.checked)}></Checkbox>
+                                        <ActionIcon tabIndex={-1} variant="transparent" color='red' onClick={deleteQuestion}>
+                                            <IconTrash />
+                                        </ActionIcon>
+                                    </Group>
                                     {(props.data.type === 'radio' || props.data.type === 'multiselect') &&
                                         <>
                                             {responses.map((item, index) => (
@@ -143,7 +164,21 @@ export default function EditableQuestion(props: EditableQuestionProps) {
                                                             shadow="md"
                                                             withBorder
                                                         >
-                                                            <TextInput value={item} onChange={(e) => updateResponse(index, e.currentTarget.value)} />
+                                                            <Group>
+                                                                <TextInput placeholder='Type your response here' value={item} onChange={(e) => updateResponse(index, e.currentTarget.value)} />
+                                                                {responses.length > 2 &&
+                                                                    <ActionIcon tabIndex={-1} variant="transparent" color='red' onClick={() => deleteResponse(index)}>
+                                                                        <IconTrash />
+                                                                    </ActionIcon>
+                                                                }
+                                                                {responses.length <= 2 &&
+                                                                    <Tooltip label="Question must have at least two responses" openDelay={500}>
+                                                                        <ActionIcon tabIndex={-1} variant="transparent" color='red' disabled onClick={(e) => e.preventDefault()}>
+                                                                            <IconTrash />
+                                                                        </ActionIcon>
+                                                                    </Tooltip>
+                                                                }
+                                                            </Group>
                                                         </Paper>
                                                     )}
                                                 </Draggable>

@@ -5,7 +5,9 @@ import { Button, Center, Group, HoverCard, Modal, Paper, Popover, ScrollArea, Te
 import { useDisclosure } from '@mantine/hooks';
 import { IconBlockquote, IconCursorText, IconListCheck, IconListDetails, IconMail, IconNumber123, IconPhone, IconPlus } from '@tabler/icons-react';
 import { useEffect, useId, useState } from 'react';
+import { modals } from '@mantine/modals';
 import { v4 as uuidv4 } from 'uuid';
+import { Survey, createSurvey } from '@/services/survey.service';
 
 export default function Create() {
     const surveyData: Question[] = [
@@ -26,6 +28,19 @@ export default function Create() {
     const [questions, setQuestions] = useState(surveyData);
     const [modelOpened, { open, close }] = useDisclosure(false);
 
+    const confirmDeleteModal = (id: string, data: undefined) => modals.openConfirmModal({
+        title: 'Are you sure?',
+        children: (
+            <Text size="sm">
+                Removing this question is irreversible.
+            </Text>
+        ),
+        labels: { confirm: 'Yes', cancel: 'No' },
+        confirmProps: { color: 'red' },
+        onCancel: () => { },
+        onConfirm: () => updateQuestion(id, data),
+    });
+
     const handleDragEnd = (result: any) => {
         const { source, destination } = result;
         if (!destination) return;
@@ -45,8 +60,8 @@ export default function Create() {
             required: true,
             id: uuidv4(),
             responses: [
-                'Type your response here',
-                'Type your response here'
+                '',
+                ''
             ]
         });
 
@@ -54,11 +69,18 @@ export default function Create() {
         setQuestions(newData);
     }
 
+    const confirmQuestionAction = (id: string, data: Question | undefined) => {
+        if (!data) {
+            return confirmDeleteModal(id, data);
+        }
+
+        updateQuestion(id, data);
+    }
+
     const updateQuestion = (id: string, data: Question | undefined) => {
         const newData = [...questions];
 
-        if (data === undefined)
-        {
+        if (data === undefined) {
             const cleaned = newData.filter(x => x.id !== id);
             setQuestions(cleaned);
             return;
@@ -69,33 +91,21 @@ export default function Create() {
         setQuestions(newData);
     }
 
-    const createSurvey = () => {
-        console.log(questions.length);
-        questions.forEach(question => {
-            console.log(`"${question.title}" (TYPE: ${question.type}, REQUIRED: ${question.required}):`);
-            if (question.responses)
-                question.responses.forEach(response => {
-                    console.log(response);
-                });
-        })
+    const submit = () => {
+        const survey: Survey = {title: "Survey", questions};
+
+        fetch('/api/survey', { method: 'POST', body: JSON.stringify(survey)});
     };
 
     useEffect(() => {
-        console.log(questions.length);
-        questions.forEach(question => {
-            console.log(`"${question.title}" (TYPE: ${question.type}, REQUIRED: ${question.required}):`);
-            if (question.responses)
-                question.responses.forEach(response => {
-                    console.log(response);
-                });
-        });
+        console.log(JSON.stringify(questions));
     }, [questions]);
 
     return (
         <>
             <Modal opened={modelOpened} onClose={close} title="Add Question" size="auto">
                 <ScrollArea>
-                <Text><b>Text</b></Text>
+                    <Text><b>Text</b></Text>
                     <Group justify='flex-end'>
                         <IconCursorText />
                         <Text>Accept a short text answer from your respondent.</Text>
@@ -148,20 +158,27 @@ export default function Create() {
                         >
                             <Text><b>Survey</b></Text>
                             <ScrollArea>
-                            {questions.map((item, index) => ( 
-                                <EditableQuestion key={item.id} data={item} updateQuestion={updateQuestion} index={index} />
-                            ))}
-                            {provided.placeholder}
-                            <Center>
-                                <Tooltip label="Add question" openDelay={250}>
-                                    <Button fullWidth color='gray' onClick={open}><IconPlus /></Button>
-                                </Tooltip>
-                            </Center>
+                                {questions.map((item, index) => (
+                                    <EditableQuestion key={item.id} data={item} updateQuestion={confirmQuestionAction} index={index} />
+                                ))}
+                                {provided.placeholder}
+                                <Center>
+                                    <Tooltip label="Add question" openDelay={250}>
+                                        <Button fullWidth color='gray' onClick={open}><IconPlus /></Button>
+                                    </Tooltip>
+                                </Center>
                             </ScrollArea>
                         </Paper>
                     )}
                 </Droppable>
-                <Button onClick={createSurvey}>Create</Button>
+                {questions.length > 0 &&
+                    <Button onClick={submit}>Create</Button>
+                }
+                {questions.length == 0 &&
+                    <Tooltip label="Survey cannot be created without any questions, silly!" openDelay={500}>
+                        <Button disabled onClick={submit}>Create</Button>
+                    </Tooltip>
+                }
             </DragDropContext>
         </>
     );

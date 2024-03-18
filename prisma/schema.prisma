@@ -5,35 +5,52 @@ generator client {
 datasource db {
     provider = "postgresql"
     url = env("DATABASE_URL")
-    directUrl = env("DATABASE_URL_NON_POOLING")
 }
 
 model Survey {
-    id String @default(cuid()) @id
-    managerId String
-    acceptResponsesUntil DateTime DateTime @map(name: "created_at)
-    createdAt DateTime @default(now(), @map(name: "created_at))
+    id String @unique @db.VarChar(6)
+    managerId String @map(name: "manager_id") @db.VarChar(6)
+    title String
+    responses Response[]
+    questions Question[]
+    acceptResponsesUntil DateTime @default(now()) @map(name: "accept_responses_until")
+    createdAt DateTime @default(now()) @map(name: "created_at")
+
+    @@map("surveys")
 }
 
 model Response {
-    id String @default(cuid()) @id
-    survey Survey
-    createdAt DateTime @default(now(), @map(name: "created_at))
+    id String @unique @db.VarChar(6)
+    survey Survey @relation(fields: [surveyId], references: [id])
+    surveyId String @map(name: "survey_id")
+    questionResponses QuestionResponse[]
+    createdAt DateTime @default(now()) @map(name: "created_at")
+
+    @@map("responses")
 }
 
 model Question {
-    id String @default(cuid()) @id
-    surveyId String
-    index Number
+    id String @unique @db.VarChar(12)
+    survey Survey @relation(fields: [surveyId], references: [id])
+    surveyId String @map(name: "survey_id")
+    questionResponses QuestionResponse[]
+    index Int
+    title String
     required Boolean @default(false)
-    type varchar
-    values: String[]
-    createdAt DateTime @default(now(), @map(name: "created_at))
+    type String @db.VarChar()
+    values String[]
+    createdAt DateTime @default(now()) @map(name: "created_at")
+
+    @@map("questions")
 }
 
 model QuestionResponse {
-    id String @default(cuid())
-    response Response
-    question Question
-    values: String[]
+    id String @unique @db.VarChar(12)
+    response Response @relation(fields: [responseId], references: [id])
+    question Question @relation(fields: [questionId], references: [id])
+    questionId String @map(name: "question_id")
+    responseId String @map(name: "response_id")
+    values String[]
+
+    @@map("question_responses")
 }

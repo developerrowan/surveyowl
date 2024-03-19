@@ -4,7 +4,7 @@ import { Survey } from '@/services/survey.service';
 import { ActionIcon, Alert, Box, Button, Center, Checkbox, Container, CopyButton, Divider, Group, Input, Loader, LoadingOverlay, NumberInput, Radio, Stack, Text, TextInput, Textarea, Title, Tooltip, Transition, Modal } from '@mantine/core';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { showNotification } from '@mantine/notifications';
-import { DataTable, type DataTableSortStatus } from 'mantine-datatable';
+import { DataTable, DataTableColumn, type DataTableSortStatus } from 'mantine-datatable';
 import NotFound from '@/components/NotFound';
 import { IconCalendar, IconCheck, IconConfetti, IconCopy, IconTrash } from '@tabler/icons-react';
 import useWindowSize from 'react-use/lib/useWindowSize';
@@ -276,7 +276,7 @@ export default function SurveyView({ params, searchParams }: { params: { id: str
                         // 👇 provide data
                         records={tableData}
                         // 👇 define columns
-                        columns={columns}
+                        columns={columns as unknown as DataTableColumn<any>[]}
                         // 👇 execute this callback when a row is clicked
                         onRowClick={({ record: { name, party, bornIn } }) =>
                             showNotification({

@@ -1,6 +1,4 @@
-import { Survey, createSurvey, deleteSurvey, getSurvey, surveyExists, updateSurveyResponseWindow } from '@/services/survey.service';
-import { getQuestions } from '@/services/question.service';
-import { NextApiRequest } from 'next';
+import { Survey, deleteSurvey, getSurvey, surveyExists, updateSurveyResponseWindow } from '@/services/survey.service';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string }}) {

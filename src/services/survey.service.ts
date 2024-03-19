@@ -71,7 +71,7 @@ export async function getSurvey(surveyId: string) {
 
     const questions: Question[] = await getQuestions(surveyId);
 
-    const survey: Survey = { title: surveyFromDb.title, acceptResponsesUntil: new Date(surveyFromDb.acceptResponsesUntil), questions };
+    const survey: Survey = { title: surveyFromDb!.title, acceptResponsesUntil: new Date(surveyFromDb!.acceptResponsesUntil), questions };
 
     return survey;
 }

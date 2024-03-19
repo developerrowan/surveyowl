@@ -1,9 +1,7 @@
-import { Survey, createSurvey, getSurvey, surveyExists } from '@/services/survey.service';
-import { getQuestions } from '@/services/question.service';
-import { NextApiRequest } from 'next';
+import { Survey, getSurvey, surveyExists } from '@/services/survey.service';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextApiRequest, { params }: { params: { id: string, managerId: string }}) {
+export async function GET(request: NextRequest, { params }: { params: { id: string, managerId: string }}) {
     if (!params.id || !params.managerId)
         return NextResponse.json(null, { status: 400 });
 

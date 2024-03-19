@@ -1,22 +1,19 @@
 "use client";
 
+import { EditableQuestionProps, Question } from "@/types";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import {
+  ActionIcon,
+  Button,
   Checkbox,
+  Group,
   Input,
   Paper,
-  Text,
-  Textarea,
-  Radio,
   TextInput,
-  Button,
-  Group,
-  ActionIcon,
+  Textarea,
   Tooltip,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
 import {
-  Icon123,
   IconBlockquote,
   IconCursorText,
   IconListCheck,
@@ -27,21 +24,7 @@ import {
   IconPlus,
   IconTrash,
 } from "@tabler/icons-react";
-import { ReactNode, RefObject, useEffect, useId, useState } from "react";
-
-export interface Question {
-  title: string;
-  type: string;
-  required: boolean;
-  id: string;
-  responses?: string[];
-}
-
-interface EditableQuestionProps {
-  data: Question;
-  updateQuestion: Function;
-  index: number;
-}
+import { ReactNode, useEffect, useId, useState } from "react";
 
 function getIcon(type: string): ReactNode {
   switch (type) {
@@ -60,18 +43,6 @@ function getIcon(type: string): ReactNode {
     case "multiselect":
       return <IconListDetails />;
   }
-}
-
-function Response() {
-  const id: string = useId();
-  const [value, setValue] = useState("Type your response here");
-
-  return (
-    <TextInput
-      value={value}
-      onChange={(e) => setValue(e.currentTarget.value)}
-    />
-  );
 }
 
 export default function EditableQuestion(props: EditableQuestionProps) {

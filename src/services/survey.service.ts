@@ -1,13 +1,7 @@
-import { Question } from "@/components/EditableQuestion";
 import prisma from "@/lib/prisma";
+import { Question, Survey } from "@/types";
 import generateId from "@/utils/generateId";
 import { getQuestions } from "./question.service";
-
-export type Survey = {
-  title: string;
-  acceptResponsesUntil?: Date;
-  questions: Question[];
-};
 
 export async function deleteSurvey(surveyId: string): Promise<boolean> {
   await prisma.survey.delete({
@@ -31,8 +25,6 @@ export async function updateSurveyResponseWindow(
       acceptResponsesUntil,
     },
   });
-
-  console.log(updateSurvey);
 
   return updateSurvey.acceptResponsesUntil === acceptResponsesUntil;
 }

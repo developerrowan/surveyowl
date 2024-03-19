@@ -1,24 +1,16 @@
 "use client";
 import {
-  Center,
-  Container,
+  ActionIcon,
   Button,
-  Divider,
+  Center,
+  Group,
   Stack,
   Text,
-  Group,
   TextInput,
-  rem,
-  ActionIcon,
-  useMantineTheme,
   Title,
+  rem,
 } from "@mantine/core";
-import {
-  IconArrowRight,
-  IconCheckbox,
-  IconChecklist,
-  IconSearch,
-} from "@tabler/icons-react";
+import { IconArrowRight, IconChecklist, IconSearch } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

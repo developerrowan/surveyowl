@@ -1,50 +1,20 @@
 "use client";
-import { Question } from "@/components/EditableQuestion";
-import { Survey } from "@/services/survey.service";
+import NotFound from "@/components/NotFound";
+import Report from "@/components/Report";
+import { Question, QuestionResponseDisplay, Response, Survey } from "@/types";
 import {
-  ActionIcon,
-  Alert,
-  Box,
   Button,
   Center,
-  Checkbox,
   Container,
-  CopyButton,
-  Divider,
   Group,
-  Input,
-  Loader,
   LoadingOverlay,
-  NumberInput,
-  Radio,
   Stack,
-  Table,
-  Text,
-  TextInput,
-  Textarea,
   Title,
-  Tooltip,
-  Transition,
 } from "@mantine/core";
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import NotFound from "@/components/NotFound";
-import { Response } from "@/services/response.service";
-import Link from "next/link";
-import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import Report from "@/components/Report";
-
-export interface QuestionResponse {
-  questionId: string;
-  values: string[];
-}
-
-export interface QuestionResponseDisplay {
-  question: Question;
-  totalResponses: number;
-  totalResponsesAcrossSurveys: number;
-  responses: any[];
-}
+import jsPDF from "jspdf";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 export default function SurveyView({
   params,
@@ -163,10 +133,10 @@ export default function SurveyView({
         const imgData = canvas.toDataURL("image/png");
 
         /*
-            Here are the numbers (paper width and height) that I found to work. 
-            It still creates a little overlap part between the pages, but good enough for me.
-            if you can find an official number from jsPDF, use them.
-            */
+                                    Here are the numbers (paper width and height) that I found to work. 
+                                    It still creates a little overlap part between the pages, but good enough for me.
+                                    if you can find an official number from jsPDF, use them.
+                                    */
         const imgWidth = 210;
         const pageHeight = 295;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;

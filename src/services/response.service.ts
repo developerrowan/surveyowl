@@ -1,15 +1,7 @@
-import { Question } from "@/components/EditableQuestion";
 import prisma from "@/lib/prisma";
+import { QuestionResponse, Response } from "@/types";
 import generateId from "@/utils/generateId";
-import { getQuestions } from "./question.service";
-import { QuestionResponse } from "@/app/[id]/page";
 import { getQuestionResponses } from "./questionResponse.service";
-
-export type Response = {
-  responseId: string;
-  answers: QuestionResponse[];
-  createdAt: Date;
-};
 
 export async function createResponse(
   surveyId: string,

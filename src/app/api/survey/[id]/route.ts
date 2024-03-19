@@ -1,10 +1,10 @@
 import {
-  Survey,
   deleteSurvey,
   getSurvey,
   surveyExists,
   updateSurveyResponseWindow,
 } from "@/services/survey.service";
+import { Survey } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(

@@ -1,6 +1,7 @@
+import { getResponses } from "@/services/response.service";
 import { surveyExists } from "@/services/survey.service";
+import { Response } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
-import { Response, getResponses } from "@/services/response.service";
 
 export async function GET(
   request: NextRequest,

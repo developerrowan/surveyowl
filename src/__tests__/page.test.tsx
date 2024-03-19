@@ -1,8 +1,8 @@
-import { afterEach, expect, it, vi, describe, beforeAll } from "vitest";
+import { MantineProvider } from "@mantine/core";
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import Home from "../app/page";
-import { MantineProvider } from "@mantine/core";
 
 import { AppRouterContextProviderMock } from "./app-router-context-provider-mock";
 

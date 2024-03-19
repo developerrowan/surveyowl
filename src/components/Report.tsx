@@ -1,5 +1,5 @@
-import { QuestionResponseDisplay } from "@/app/[id]/[managerId]/report/page";
-import { Stack, Title, Text, Table } from "@mantine/core";
+import { QuestionResponseDisplay } from "@/types";
+import { Stack, Table, Text, Title } from "@mantine/core";
 
 interface ReportProps {
   allAnswers: QuestionResponseDisplay[];

@@ -1,9 +1,9 @@
+import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.layer.css";
 import "@mantine/dates/styles.css";
+import { ModalsProvider } from "@mantine/modals";
 import "mantine-datatable/styles.layer.css";
 import "./layout.css";
-import { ColorSchemeScript, MantineProvider } from "@mantine/core";
-import { ModalsProvider } from "@mantine/modals";
 
 export default function RootLayout({
   children,

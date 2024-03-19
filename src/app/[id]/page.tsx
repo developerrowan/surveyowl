@@ -1,16 +1,12 @@
 "use client";
-import { Question } from "@/components/EditableQuestion";
-import { Survey } from "@/services/survey.service";
+import { Question, QuestionResponse, Survey } from "@/types";
 import {
   Box,
   Button,
   Center,
   Checkbox,
-  Container,
   Divider,
-  Group,
   Input,
-  Loader,
   LoadingOverlay,
   NumberInput,
   Radio,
@@ -22,15 +18,10 @@ import {
   Transition,
 } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
-import { ZodRawShape, z } from "zod";
-import { useEffect, useState } from "react";
-import { IMask, IMaskInput } from "react-imask";
 import Link from "next/link";
-
-export interface QuestionResponse {
-  questionId: string;
-  values: string[];
-}
+import { useEffect, useState } from "react";
+import { IMaskInput } from "react-imask";
+import { ZodRawShape, z } from "zod";
 
 export default function SurveyView({ params }: { params: { id: string } }) {
   const [survey, setSurvey] = useState({

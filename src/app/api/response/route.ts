@@ -1,5 +1,4 @@
 import { createResponse } from "@/services/response.service";
-import { Survey, createSurvey, getSurvey } from "@/services/survey.service";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {

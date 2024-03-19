@@ -1,68 +1,41 @@
 "use client";
-import { Question } from "@/components/EditableQuestion";
-import { Survey } from "@/services/survey.service";
+import NotFound from "@/components/NotFound";
+import { Column, Question, Response, Survey } from "@/types";
 import {
   ActionIcon,
   Alert,
-  Box,
   Button,
   Center,
-  Checkbox,
   Container,
   CopyButton,
-  Divider,
   Group,
-  Input,
-  Loader,
   LoadingOverlay,
-  NumberInput,
-  Radio,
+  Modal,
   Stack,
   Text,
   TextInput,
-  Textarea,
   Title,
   Tooltip,
-  Transition,
-  Modal,
 } from "@mantine/core";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { DatePickerInput } from "@mantine/dates";
+import { useDisclosure } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import {
-  DataTable,
-  DataTableColumn,
-  type DataTableSortStatus,
-} from "mantine-datatable";
-import NotFound from "@/components/NotFound";
-import {
-  IconCalendar,
   IconCheck,
   IconConfetti,
   IconCopy,
   IconTrash,
 } from "@tabler/icons-react";
-import useWindowSize from "react-use/lib/useWindowSize";
-import Confetti from "react-confetti";
-import { Response } from "@/services/response.service";
-import { CSVLink } from "react-csv";
-import { modals } from "@mantine/modals";
-import { useDisclosure } from "@mantine/hooks";
+import {
+  DataTable,
+  DataTableColumn,
+  type DataTableSortStatus,
+} from "mantine-datatable";
 import Link from "next/link";
-import { DatePickerInput } from "@mantine/dates";
-
-export interface QuestionResponse {
-  questionId: string;
-  values: string[];
-}
-
-interface Column {
-  accessor: string;
-  title: string;
-  sortable: boolean;
-  textAlign?: string;
-  filter?: ReactNode;
-  filtering?: boolean;
-}
+import { useEffect, useState } from "react";
+import Confetti from "react-confetti";
+import { CSVLink } from "react-csv";
+import useWindowSize from "react-use/lib/useWindowSize";
 
 export default function SurveyView({
   params,

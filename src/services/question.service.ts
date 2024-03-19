@@ -1,7 +1,6 @@
-import { Question } from "@/components/EditableQuestion";
 import prisma from "@/lib/prisma";
+import { Question, Survey } from "@/types";
 import generateId from "@/utils/generateId";
-import { Survey } from "./survey.service";
 
 export async function createQuestion(survey: Survey) {
   const newSurvey = await prisma.survey.create({

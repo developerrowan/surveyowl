@@ -1,19 +1,19 @@
 "use client";
-import EditableQuestion, { Question } from "@/components/EditableQuestion";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import EditableQuestion from "@/components/EditableQuestion";
+import { Question, Survey } from "@/types";
+import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import {
   Button,
   Center,
   Group,
-  HoverCard,
   Modal,
   Paper,
-  Popover,
   ScrollArea,
   Text,
   Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { modals } from "@mantine/modals";
 import {
   IconBlockquote,
   IconCursorText,
@@ -24,11 +24,9 @@ import {
   IconPhone,
   IconPlus,
 } from "@tabler/icons-react";
-import { useEffect, useId, useState } from "react";
-import { modals } from "@mantine/modals";
-import { v4 as uuidv4 } from "uuid";
-import { Survey, createSurvey } from "@/services/survey.service";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Create() {
   const surveyData: Question[] = [

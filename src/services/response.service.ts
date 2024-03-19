@@ -3,10 +3,12 @@ import prisma from '@/lib/prisma';
 import generateId from '@/utils/generateId';
 import { getQuestions } from './question.service';
 import { QuestionResponse } from '@/app/[id]/page';
+import { getQuestionResponses } from './questionResponse.service';
 
-export type Survey = {
-    title: string,
-    questions: Question[]
+export type Response = {
+    responseId: string,
+    answers: QuestionResponse[],
+    createdAt: Date
 };
 
 export async function createResponse(surveyId: string, responses: QuestionResponse[]) {
@@ -32,16 +34,23 @@ export async function createResponse(surveyId: string, responses: QuestionRespon
     return questionResponse;
 }
 
-export async function getSurvey(surveyId: string) {
-    const surveyFromDb = await prisma.survey.findUnique({
+export async function getResponses(surveyId: string) {
+    const responseFromDb = await prisma.response.findMany({
         where: {
-            id: surveyId
+            surveyId
         }
     });
 
-    const questions: Question[] = await getQuestions(surveyId);
+    const responses: Response[] = [];
 
-    const survey: Survey = { title: surveyFromDb.title, questions };
+    for (let i = 0; i < responseFromDb.length; i++) {
+        const element = responseFromDb[i];
 
-    return survey;
+        const answers: QuestionResponse[] = await getQuestionResponses(element.id);
+        const response: Response = { responseId: element.id, answers, createdAt: new Date(element.createdAt) };
+
+        responses.push(response);
+    }
+
+    return responses;
 }

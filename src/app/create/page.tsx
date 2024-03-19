@@ -8,6 +8,7 @@ import { useEffect, useId, useState } from 'react';
 import { modals } from '@mantine/modals';
 import { v4 as uuidv4 } from 'uuid';
 import { Survey, createSurvey } from '@/services/survey.service';
+import { useRouter } from 'next/navigation';
 
 export default function Create() {
     const surveyData: Question[] = [
@@ -27,6 +28,7 @@ export default function Create() {
 
     const [questions, setQuestions] = useState(surveyData);
     const [modelOpened, { open, close }] = useDisclosure(false);
+    const router = useRouter();
 
     const confirmDeleteModal = (id: string, data: undefined) => modals.openConfirmModal({
         title: 'Are you sure?',
@@ -94,12 +96,14 @@ export default function Create() {
     const submit = () => {
         const survey: Survey = {title: "Survey", questions};
 
-        fetch('/api/survey', { method: 'POST', body: JSON.stringify(survey)});
+        fetch('/api/survey', { method: 'POST', body: JSON.stringify(survey)}).then(res => {
+            if (res.status === 200) {
+                res.json().then(json => {
+                    router.push(json.redirectUrl);
+                });
+            }
+        });
     };
-
-    useEffect(() => {
-        console.log(JSON.stringify(questions));
-    }, [questions]);
 
     return (
         <>

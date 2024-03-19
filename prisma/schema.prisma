@@ -21,7 +21,7 @@ model Survey {
 
 model Response {
     id String @unique @db.VarChar(6)
-    survey Survey @relation(fields: [surveyId], references: [id])
+    survey Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
     surveyId String @map(name: "survey_id")
     questionResponses QuestionResponse[]
     createdAt DateTime @default(now()) @map(name: "created_at")
@@ -31,7 +31,7 @@ model Response {
 
 model Question {
     id String @unique @db.VarChar(12)
-    survey Survey @relation(fields: [surveyId], references: [id])
+    survey Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
     surveyId String @map(name: "survey_id")
     questionResponses QuestionResponse[]
     index Int
@@ -46,11 +46,12 @@ model Question {
 
 model QuestionResponse {
     id String @unique @db.VarChar(12)
-    response Response @relation(fields: [responseId], references: [id])
-    question Question @relation(fields: [questionId], references: [id])
+    response Response @relation(fields: [responseId], references: [id], onDelete: Cascade)
+    question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
     questionId String @map(name: "question_id")
     responseId String @map(name: "response_id")
     values String[]
+    createdAt DateTime @default(now()) @map(name: "created_at")
 
     @@map("question_responses")
 }

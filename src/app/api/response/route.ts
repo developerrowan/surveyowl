@@ -5,8 +5,6 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
     const body = await request.json();
 
-    console.log(JSON.stringify(body));
-
     if (!body.surveyId || !body.questionResponses)
         return NextResponse.json(null, { status: 400 });
 

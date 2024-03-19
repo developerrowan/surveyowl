@@ -84,12 +84,8 @@ export default function SurveyView({ params }: { params: { id: string } }) {
             validationRuleHandler[question.id] = resolver;
         });
 
-        console.log(validationRuleHandler);
-
         setValidationRules(z.object(validationRuleHandler));
     }, [loaded]);
-
-    useEffect(() => console.log(validationRules), [validationRules]);
 
     if (params.id.length > 6) {
         return <p>Survey not found.</p>;
@@ -131,81 +127,108 @@ export default function SurveyView({ params }: { params: { id: string } }) {
     return (
         <>
             {loaded && !success &&
-                <Transition
-                    mounted={loaded}
-                    transition="pop"
-                    duration={750}
-                    timingFunction='ease'
-                >
-                    {(styles) => (
-                        <form style={styles} onSubmit={form.onSubmit(submitForm)} noValidate>
+                <>
+                    {(Date.now() > new Date(survey.acceptResponsesUntil! as unknown as string).valueOf()) &&
+                        <Center style={{ width: '100%', height: '100vh' }}>
+                        <Stack>
                             <Center>
-                                <Title order={1}>{survey.title}</Title>
+                                <Title order={1}>Oops, sorry.</Title>
                             </Center>
                             <Center>
-                                <Stack>
-                                    {survey.questions.map((question: Question, index) => (
-                                        <Box key={question.id}>
-                                            {question.type === 'text' &&
-                                                <TextInput label={`${index + 1}. ${question.title}`} placeholder={question.title} required={question.required} {...form.getInputProps(question.id)} />
-                                            }
-                                            {question.type === 'number' &&
-                                                <NumberInput min={0} max={999999999} label={`${index + 1}. ${question.title}`} placeholder={question.title} required={question.required} {...form.getInputProps(question.id)} />
-                                            }
-                                            {question.type === 'phone' &&
-                                                <>
-                                                    <Input.Label required={question.required}>{`${index + 1}. ${question.title}`}</Input.Label>
-                                                    <Input component={IMaskInput} mask="(000) 000-0000" placeholder={question.title} {...form.getInputProps(question.id)} />
-                                                    {form.getInputProps(question.id).error &&
+                                <Text size="xl">This survey is no longer accepting responses.</Text>
+                            </Center>
+                            <Divider />
+                            <Center>
+                                <Title order={3}>If it makes you feel any better...</Title>
+                            </Center>
+                            <Center>
+                                <Text size="xl">...you could create your <i>own</i> survey!</Text>
+                            </Center>
+                            <Center>
+                                <Link href={'/create'}>
+                                    <Button size="md">Create survey</Button>
+                                </Link>
+                            </Center>
+                        </Stack>
+                    </Center>
+                    }
+                    {(Date.now() < new Date(survey.acceptResponsesUntil! as unknown as string).valueOf()) &&
+                        <Transition
+                            mounted={loaded}
+                            transition="pop"
+                            duration={750}
+                            timingFunction='ease'
+                        >
+                            {(styles) => (
+                                <form style={styles} onSubmit={form.onSubmit(submitForm)} noValidate>
+                                    <Center>
+                                        <Title order={1}>{survey.title}</Title>
+                                    </Center>
+                                    <Center>
+                                        <Stack>
+                                            {survey.questions.map((question: Question, index) => (
+                                                <Box key={question.id}>
+                                                    {question.type === 'text' &&
+                                                        <TextInput label={`${index + 1}. ${question.title}`} placeholder={question.title} required={question.required} {...form.getInputProps(question.id)} />
+                                                    }
+                                                    {question.type === 'number' &&
+                                                        <NumberInput min={0} max={999999999} label={`${index + 1}. ${question.title}`} placeholder={question.title} required={question.required} {...form.getInputProps(question.id)} />
+                                                    }
+                                                    {question.type === 'phone' &&
                                                         <>
-                                                            <Input.Error>{form.getInputProps(question.id).error}</Input.Error>
+                                                            <Input.Label required={question.required}>{`${index + 1}. ${question.title}`}</Input.Label>
+                                                            <Input component={IMaskInput} mask="(000) 000-0000" placeholder={question.title} {...form.getInputProps(question.id)} />
+                                                            {form.getInputProps(question.id).error &&
+                                                                <>
+                                                                    <Input.Error>{form.getInputProps(question.id).error}</Input.Error>
+                                                                </>
+                                                            }
                                                         </>
                                                     }
-                                                </>
-                                            }
-                                            {question.type === 'email' &&
-                                                <>
-                                                    <TextInput label={`${index + 1}. ${question.title}`} placeholder={question.title} required={question.required} {...form.getInputProps(question.id)} />
-                                                </>
-                                            }
-                                            {question.type === 'textarea' &&
-                                                <Textarea label={`${index + 1}. ${question.title}`} placeholder={question.title} required={question.required} {...form.getInputProps(question.id)} />
-                                            }
-                                            {question.type == 'radio' &&
-                                                <Radio.Group
-                                                    label={`${index + 1}. ${question.title}`}
-                                                    required={question.required}
-                                                    {...form.getInputProps(question.id)}
-                                                >
-                                                    <Stack>
-                                                        {question.responses?.map((response, responseIndex) => (
-                                                            <Radio key={`${question.id}-${index}-${responseIndex}`} value={response} label={response} />
-                                                        ))}
-                                                    </Stack>
-                                                </Radio.Group>
-                                            }
-                                            {question.type == 'multiselect' &&
-                                                <Checkbox.Group
-                                                    label={`${index + 1}. ${question.title}`}
-                                                    required={question.required}
-                                                    {...form.getInputProps(question.id)}
-                                                >
-                                                    <Stack>
-                                                        {question.responses?.map((response, responseIndex) => (
-                                                            <Checkbox key={`${question.id}-${index}-${responseIndex}`} value={response} label={response} />
-                                                        ))}
-                                                    </Stack>
-                                                </Checkbox.Group>
-                                            }
-                                        </Box>
-                                    ))}
-                                    <Button onClick={() => console.log(JSON.stringify(form.values))} type="submit">Submit</Button>
-                                </Stack>
-                            </Center>
-                        </form>
-                    )}
-                </Transition>
-
+                                                    {question.type === 'email' &&
+                                                        <>
+                                                            <TextInput label={`${index + 1}. ${question.title}`} placeholder={question.title} required={question.required} {...form.getInputProps(question.id)} />
+                                                        </>
+                                                    }
+                                                    {question.type === 'textarea' &&
+                                                        <Textarea label={`${index + 1}. ${question.title}`} placeholder={question.title} required={question.required} {...form.getInputProps(question.id)} />
+                                                    }
+                                                    {question.type == 'radio' &&
+                                                        <Radio.Group
+                                                            label={`${index + 1}. ${question.title}`}
+                                                            required={question.required}
+                                                            {...form.getInputProps(question.id)}
+                                                        >
+                                                            <Stack>
+                                                                {question.responses?.map((response, responseIndex) => (
+                                                                    <Radio key={`${question.id}-${index}-${responseIndex}`} value={response} label={response} />
+                                                                ))}
+                                                            </Stack>
+                                                        </Radio.Group>
+                                                    }
+                                                    {question.type == 'multiselect' &&
+                                                        <Checkbox.Group
+                                                            label={`${index + 1}. ${question.title}`}
+                                                            required={question.required}
+                                                            {...form.getInputProps(question.id)}
+                                                        >
+                                                            <Stack>
+                                                                {question.responses?.map((response, responseIndex) => (
+                                                                    <Checkbox key={`${question.id}-${index}-${responseIndex}`} value={response} label={response} />
+                                                                ))}
+                                                            </Stack>
+                                                        </Checkbox.Group>
+                                                    }
+                                                </Box>
+                                            ))}
+                                            <Button type="submit">Submit</Button>
+                                        </Stack>
+                                    </Center>
+                                </form>
+                            )}
+                        </Transition>
+                    }
+                </>
             }
             {success &&
                 <Center style={{ width: '100%', height: '100vh' }}>

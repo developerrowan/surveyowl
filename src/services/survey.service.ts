@@ -5,15 +5,45 @@ import { getQuestions } from './question.service';
 
 export type Survey = {
     title: string,
+    acceptResponsesUntil?: Date,
     questions: Question[]
 };
 
+export async function deleteSurvey(surveyId: string): Promise<boolean> {
+    await prisma.survey.delete({
+        where: {
+            id: surveyId
+        }
+    });
+
+    return true;
+}
+
+export async function updateSurveyResponseWindow(surveyId: string, acceptResponsesUntil: Date): Promise<boolean> {
+    const updateSurvey = await prisma.survey.update({
+        where: {
+            id: surveyId
+        },
+        data: {
+            acceptResponsesUntil
+        }
+    });
+
+    console.log(updateSurvey);
+
+    return updateSurvey.acceptResponsesUntil === acceptResponsesUntil;
+}
+
 export async function createSurvey(survey: Survey) {
+    const d = new Date();
+    const acceptUntilDate = new Date(d.setDate(d.getDate() + 10));
+
     const newSurvey = await prisma.survey.create({
         data: {
             id: generateId(),
             managerId: generateId(),
             title: survey.title,
+            acceptResponsesUntil: acceptUntilDate,
             questions: {
                 create: survey.questions.map((question, i) => {
                         return {
@@ -41,7 +71,7 @@ export async function getSurvey(surveyId: string) {
 
     const questions: Question[] = await getQuestions(surveyId);
 
-    const survey: Survey = { title: surveyFromDb.title, questions };
+    const survey: Survey = { title: surveyFromDb.title, acceptResponsesUntil: new Date(surveyFromDb.acceptResponsesUntil), questions };
 
     return survey;
 }

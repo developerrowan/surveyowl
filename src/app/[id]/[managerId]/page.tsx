@@ -8,6 +8,7 @@ import {
   Center,
   Container,
   CopyButton,
+  Divider,
   Group,
   LoadingOverlay,
   Modal,
@@ -26,11 +27,7 @@ import {
   IconCopy,
   IconTrash,
 } from "@tabler/icons-react";
-import {
-  DataTable,
-  DataTableColumn,
-  type DataTableSortStatus,
-} from "mantine-datatable";
+import { DataTable, DataTableColumn } from "mantine-datatable";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
@@ -65,14 +62,6 @@ export default function SurveyView({
     new Date(),
   );
   const [opened, { open, close }] = useDisclosure(false);
-  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<any>>({
-    columnAccessor: "name",
-    direction: "asc",
-  });
-
-  if (params.id.length > 6) {
-    return <p>Survey not found.</p>;
-  }
 
   useEffect(() => {
     setCanDeleteSurvey(deleteModalInput === "Understood");
@@ -397,7 +386,26 @@ export default function SurveyView({
         </Container>
       )}
       {!found && <NotFound />}
-      {surveyDeleted && <Text>Sad :(</Text>}
+      {surveyDeleted && (
+        <Center style={{ width: "100%", height: "100vh" }}>
+          <Stack justify="center" align="center">
+            <Title order={1}>Good-night, sweet prince.</Title>
+            <Text size="xl">
+              <i>And flights of angels sing thee to thy rest.</i>
+            </Text>
+            <Divider />
+            <Title order={3}>Your survey was deleted.</Title>
+            <Text size="xl">You can always create another one, though!</Text>
+            <Link href={"/create"}>
+              <Button size="md">Create survey</Button>
+            </Link>
+            <Text fw={700}>OR</Text>
+            <Link href={"/"}>
+              <Button size="md">Go home</Button>
+            </Link>
+          </Stack>
+        </Center>
+      )}
       {!loaded && (
         <LoadingOverlay
           visible

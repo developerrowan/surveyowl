@@ -1,4 +1,5 @@
 "use client";
+import NotFound from "@/components/NotFound";
 import { Question, QuestionResponse, Survey } from "@/types";
 import {
   Box,
@@ -29,6 +30,7 @@ export default function SurveyView({ params }: { params: { id: string } }) {
   } as Survey);
   const [loaded, setLoaded] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [found, setFound] = useState(true);
   const [validationRules, setValidationRules] = useState(z.object({}));
 
   const form = useForm({
@@ -126,12 +128,13 @@ export default function SurveyView({ params }: { params: { id: string } }) {
     setValidationRules(z.object(validationRuleHandler));
   }, [loaded]);
 
-  if (params.id.length > 6) {
-    return <p>Survey not found.</p>;
-  }
-
   useEffect(() => {
     fetch(`/api/survey/${params.id}`, { method: "GET" }).then((res) => {
+      if (res.status === 404) {
+        setLoaded(true);
+        return setFound(false);
+      }
+
       res.json().then((survey) => {
         setSurvey(JSON.parse(survey));
         setLoaded(true);
@@ -166,7 +169,7 @@ export default function SurveyView({ params }: { params: { id: string } }) {
 
   return (
     <>
-      {loaded && !success && (
+      {loaded && found && !success && (
         <>
           {Date.now() >
             new Date(
@@ -353,6 +356,7 @@ export default function SurveyView({ params }: { params: { id: string } }) {
           </Stack>
         </Center>
       )}
+      {!found && <NotFound />}
       {!loaded && (
         <LoadingOverlay
           visible

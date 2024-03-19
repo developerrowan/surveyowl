@@ -18,8 +18,6 @@ export async function DELETE(
 
   const result = await deleteSurvey(params.id);
 
-  console.log(result);
-
   if (!result) return NextResponse.json(null, { status: 500 });
 
   return NextResponse.json(null, { status: 200 });

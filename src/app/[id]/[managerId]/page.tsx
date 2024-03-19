@@ -296,7 +296,7 @@ export default function SurveyView({ params, searchParams }: { params: { id: str
                                 minDate={new Date()}
                                 maxDate={new Date(new Date().setDate(new Date().getDate() + 30))}
                             />
-                            <Text>(You may extend the survey's response up to 30 days at a time)</Text>
+                            <Text>(You may extend the survey&apos;s response up to 30 days at a time)</Text>
                             <Button mt="xl" color="red" onClick={open}><IconTrash /> Delete survey</Button>
                         </Stack>
                     </Center>

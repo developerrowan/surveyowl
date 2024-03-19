@@ -30,7 +30,7 @@ export default function Home() {
         </Link>
         <Text size="xl" fw={400}>OR</Text>
         <Stack justify="center" align="center">
-          <Text>Enter a survey's ID:</Text>
+          <Text>Enter a survey&apos;s ID:</Text>
           <Group>
             <TextInput
               radius="xl"

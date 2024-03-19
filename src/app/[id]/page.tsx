@@ -241,7 +241,7 @@ export default function SurveyView({ params }: { params: { id: string } }) {
                         </Center>
                         <Divider />
                         <Center>
-                            <Title order={3}>Hey...while you're here...</Title>
+                            <Title order={3}>Hey...while you&apos;re here...</Title>
                         </Center>
                         <Center>
                             <Text size="xl">...why not create your <i>own</i> survey?</Text>
